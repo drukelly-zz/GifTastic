@@ -5,10 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <title>ItsGif</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css"/>
   <!-- site.css -->
   <link rel="stylesheet" href="assets/css/site.css">
   <!-- favicons -->
@@ -18,12 +17,25 @@
   <link rel="manifest" href="site.webmanifest">
 </head>
 
-<body>
-  <!-- jQuery -->
-  <!-- change src accordingly -->
-  <!-- http or https -->
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<body class="bg-lightest-blue dark-gray lh-copy system-sans-serif">
+  <header class="blue">
+    <h1>ItsGif</h1>
+    <div class="bb b--black-10 flex items-center mb2 pb3">
+      <label for="search">
+        <input type="text" id="search" name="search" placeholder="Add" class="pa1">
+      </label>
+      <button id="btn-search" class="ml2 ph2 pv1">Add</button>
+      <ul class="filter ml-auto mr0 mv0 pl0">
+        <li class="dib"><a href="#" class="b">all</a></li>
+        <li class="dib"><a href="#" class="dark-red">favorites</a></li>
+      </div>
+    </div>
+    <nav class="mt2 pt2"></nav>
+  </header>
+
+  <main>
+    <!-- append all of the gifs, here! -->
+  </main>
   <!-- app.js -->
   <script src="assets/js/app.js"></script>
 </body>
