@@ -3,8 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let topics = ["dog", "cat", "hamster", "skunk", "goldfish", "bird", "ferret", "turtle", "sugar glider", "chinchilla", "hedgehog", "hermit crab", "gerbil", "pygmy goat", "chicken", "capybara", "teacup pig", "serval", "salamander", "frog"];
   let animal = topics[0];
-  
-  let queryURL = `https://api.giphy.com/v1/gifs/search?q=${animal}&api_key=${API_KEY}&limit=10`;
+  let container = document.querySelector("#content");
+
+  let queryURL = `https://api.giphy.com/v1/gifs/search?q=${animal}&api_key=${API_KEY}&limit=10&rating=g`;
 
   if (window.fetch) {
     fetch(queryURL, {
@@ -13,7 +14,20 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(result => result.json())
       .then(response => {
         // console.log(`fetch => ${response}`);
-        console.log(response.data);
+        let results = response.data;
+        results.forEach(result => {
+          let div = document.createElement("div"),
+            image = document.createElement("img"),
+            p = document.createElement("p");
+          div.classList.add("dib", "mb3", "mr3");
+          image.setAttribute("src", result.images.fixed_width_still.url);
+          image.classList.add("br2", "br--top", "bn", "bt", "db", "pointer");
+          p.classList.add("bg-white", "br2", "br--bottom", "db", "mt0", "pa2");
+          p.innerHTML = `Rating: ${result.rating}`;
+          div.appendChild(image);
+          div.appendChild(p);
+          container.prepend(div);
+        });
       });
   } else {
     const xhr = new XMLHttpRequest();
@@ -38,6 +52,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (event.target.type === "button") {
       console.log(event.target.textContent.replace(" ", "+"));
     }
+  }
+
+  const callAPI = () => {
+
   }
 
   topics.forEach(topic => {
