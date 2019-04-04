@@ -1,10 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   const API_KEY = "g6htg7nRAnHgje4mKdR6pFF8WisPUXIW";
-  let topics = ["flossing", "carlton dance", "dougie", "two step", "breakdance", "pop and locking", "nae nae", "macarena", "shuffling", "tap", "running man", "cabbage patch dance"];
+  let topics = ["flossing", "carlton dance", "teach me how to dougie", "breakdance", "macarena", "shuffling", "tap dance", "running man", "cabbage patch dance", "vogue", "hotline bling", "shiggy"];
   let search = topics[Math.floor(Math.random() * Math.floor(topics.length))];
   let container = document.querySelector("#content");
-  let queryURL = `https://api.giphy.com/v1/gifs/search?q=${search}&api_key=${API_KEY}&limit=10&rating=g`;
-  const callAPI = () => {
+  const callAPI = (search) => {
+    search = search.replace(" ", "+");
+    let queryURL = `https://api.giphy.com/v1/gifs/search?q=${search}&api_key=${API_KEY}&limit=10&rating=g`;
     if (window.fetch) {
       fetch(queryURL, {
         method: "GET"
@@ -12,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(result => result.json())
         .then(response => {
           // console.log(`fetch => ${response}`);
-          renderGrid(response);
+          renderGifs(response);
         });
     } else {
       const xhr = new XMLHttpRequest();
@@ -22,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (xhr.status === 200) {
             let response = JSON.parse(xhr.response);
             // console.log(`xhr => ${response.data}`);
-            renderGrid(response);
+            renderGifs(response);
           } else {
             console.error(xhr.responseText);
           }
@@ -34,13 +35,27 @@ document.addEventListener("DOMContentLoaded", () => {
       xhr.send();
     }
   }
-  callAPI();
+  const addTopic = (item) => {
+    topics.push(item);
+    renderButtons();
+    document.querySelector("form").reset();
+  }
   const buttonClick = (event) => {
     if (event.target.type === "button") {
-      console.log(event.target.textContent.replace(" ", "+"));
+      callAPI(event.target.textContent.replace(" ", "+"));
     }
   }
-  const renderGrid = (response) => {
+  const renderButtons = () => {
+    document.querySelector("nav").innerHTML = "";
+    topics.forEach(topic => {
+      let button = document.createElement("button");
+      button.setAttribute("type", "button");
+      button.innerHTML = topic;
+      button.classList.add("bn", "br3", "bg-washed-blue", "black", "dib", "dim", "f6", "input-reset", "link", "lh-copy", "mb2", "mr2", "ph2", "pointer", "pv1");
+      document.querySelector("header").lastElementChild.appendChild(button);
+    });
+  }
+  const renderGifs = (response) => {
     let results = response.data;
     results.forEach(result => {
       let div = document.createElement("div"),
@@ -78,16 +93,14 @@ document.addEventListener("DOMContentLoaded", () => {
       event.target.setAttribute("src", imageURL.replace(".webp", "_s.gif"));
     }
   }
-  topics.forEach(topic => {
-    let button = document.createElement("button");
-    button.setAttribute("type", "button");
-    button.innerHTML = topic;
-    button.classList.add("bn", "br3", "bg-washed-blue", "black", "dib", "dim", "f6", "input-reset", "link", "lh-copy", "mb2", "mr2", "ph2", "pointer", "pv1");
-    document.querySelector("header").lastElementChild.appendChild(button);
-  });
+  callAPI(search);
+  renderButtons();
   document.querySelector("#btn-search").addEventListener("click", (event) => {
-    let searchValue = document.querySelector("#search").value;
-    (searchValue === "") ? "" : console.log(searchValue);
+    let searchValue = document.querySelector("#search").value.trim();
+    (searchValue === "") ? "" : addTopic(searchValue);
   });
   document.querySelector("header").addEventListener("click", buttonClick);
+  document.querySelector("form").addEventListener("submit", (event) => {
+    event.preventDefault();
+  });
 });
