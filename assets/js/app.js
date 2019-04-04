@@ -1,12 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   const API_KEY = "g6htg7nRAnHgje4mKdR6pFF8WisPUXIW";
-
-  let topics = ["flossing", "carlton dance", "doughie", "electric slide", "two step", "breakdance", "pop and locking", "nae nae", "macarena", "shuffling", "tap", "running man", "cabbage patch dance"];
+  let topics = ["flossing", "carlton dance", "dougie", "two step", "breakdance", "pop and locking", "nae nae", "macarena", "shuffling", "tap", "running man", "cabbage patch dance"];
   let search = topics[Math.floor(Math.random() * Math.floor(topics.length))];
   let container = document.querySelector("#content");
-
   let queryURL = `https://api.giphy.com/v1/gifs/search?q=${search}&api_key=${API_KEY}&limit=10&rating=g`;
-
   const callAPI = () => {
     if (window.fetch) {
       fetch(queryURL, {
@@ -49,22 +46,37 @@ document.addEventListener("DOMContentLoaded", () => {
       let div = document.createElement("div"),
         cardCopyDiv = document.createElement("div"),
         image = document.createElement("img"),
-        ratingP = document.createElement("p"),
-        faveP = document.createElement("p");
-      div.classList.add("dib", "mb3", "mr3");
+        ratingP = document.createElement("p");
+      div.classList.add("gif-item", "dib", "mb3", "mr3");
       image.setAttribute("src", result.images.fixed_width_still.url);
       image.classList.add("br2", "br--top", "bn", "bt", "db", "pointer");
-      cardCopyDiv.classList.add("bg-white", "br2", "br--bottom", "flex", "mt0", "pa2");
+      image.addEventListener("click", toggleAnimation);
+      cardCopyDiv.classList.add("bg-white", "br2", "br--bottom", "bt", "b--black-10", "flex", "mt0", "pa2");
       ratingP.classList.add("ma0");
       ratingP.innerHTML = `<strong>Rating</strong> ${result.rating.toUpperCase()}`;
-      faveP.classList.add("ma0", "ml-auto");
-      faveP.innerHTML = `<a href="#" class="btn-favorite gray"><i class="demo-icon icon-heart"></i></a>`;
       div.appendChild(image);
       div.appendChild(cardCopyDiv);
       cardCopyDiv.appendChild(ratingP);
-      cardCopyDiv.appendChild(faveP);
       container.prepend(div);
     });
+  }
+  const resetAllGifs = () => {
+    let allGifs = document.querySelectorAll(".gif-item");
+    allGifs.forEach(gif => {
+      let imageURL = gif.firstElementChild.getAttribute("src");
+      gif.firstElementChild.setAttribute("src", imageURL.replace(".webp", "_s.gif"));
+    });
+  }
+  const toggleAnimation = (event) => {
+    event.preventDefault();
+    resetAllGifs();
+    let imageURL = event.target.getAttribute("src");
+    if (imageURL.substr(imageURL.length-6) === "_s.gif") {
+      event.target.setAttribute("src", imageURL.replace("_s.gif", ".webp"));
+    }
+    if (imageURL.substr(imageURL.length-5) === ".webp") {
+      event.target.setAttribute("src", imageURL.replace(".webp", "_s.gif"));
+    }
   }
   topics.forEach(topic => {
     let button = document.createElement("button");
