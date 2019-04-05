@@ -1,2 +1,2 @@
-# Gif that keeps of gif-ing
+# Gif that keeps on gif-ing
 A Giphy API Exercise
