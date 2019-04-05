@@ -7,6 +7,23 @@ document.addEventListener("DOMContentLoaded", () => {
   let search = topics[Math.floor(Math.random() * Math.floor(topics.length))];
   // main#content
   let container = document.querySelector("#content");
+  // Add a topic into the `topics` array
+  const addTopic = (item) => {
+    topics.push(item);
+    // Set localStorage of topics added
+    setLocalStorage(topics);
+    // Render buttons once more based on the addition of the latest topic added
+    renderButtons();
+    // Reset form
+    document.querySelector("form").reset();
+  }
+  // Button click function
+  const buttonClick = (event) => {
+    if (event.target.type === "button") {
+      // Call the API with the clicked button as the topic/search term
+      callAPI(event.target.textContent.replace(" ", "+"));
+    }
+  }
   // callAPI function with the search term as the argument
   const callAPI = (search) => {
     // Replace space with + to conform to API's search term guidelines
@@ -26,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // See function below for detailed line-by-line comments
           renderGifs(response);
         });
-    // Use XML Http Request Protocol instead of fetch
+      // Use XML Http Request Protocol instead of fetch
     } else {
       const xhr = new XMLHttpRequest();
       xhr.open("GET", queryURL);
@@ -48,25 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
       xhr.send();
     }
   }
-  // Add a topic into the `topics` array
-  const addTopic = (item) => {
-    topics.push(item);
-    // Render buttons once more based on the addition of the latest topic added
-    renderButtons();
-    // Reset form
-    document.querySelector("form").reset();
-  }
-  // Button click function
-  const buttonClick = (event) => {
-    if (event.target.type === "button") {
-      // Call the API with the clicked button as the topic/search term
-      callAPI(event.target.textContent.replace(" ", "+"));
-    }
-  }
-  // Function to render the button
-  const renderButtons = () => {
-    // Empty the nav
-    document.querySelector("nav").innerHTML = "";
+  // A function to re-use the instruction set for adding buttons
+  const instructionsForButtons = () => {
     // Loop through the topics array
     topics.forEach(topic => {
       let button = document.createElement("button");
@@ -75,6 +75,20 @@ document.addEventListener("DOMContentLoaded", () => {
       button.classList.add("bn", "br3", "bg-washed-blue", "black", "dib", "dim", "f6", "input-reset", "link", "lh-copy", "mb2", "mr2", "ph2", "pointer", "pv1");
       document.querySelector("header").lastElementChild.appendChild(button);
     });
+  }
+  // Function to render the buttons (plural)
+  const renderButtons = () => {
+    // Empty the nav
+    document.querySelector("nav").innerHTML = "";
+    // if localStorage version of `topics` exists
+    if (localStorage.getItem("topics")) {
+      topics = localStorage.getItem("topics");
+      topics = (topics.split(","));
+      instructionsForButtons();
+      // Otherwise, use the stored array value (modified or not)
+    } else {
+      instructionsForButtons();
+    }
   }
   // Function to render the gifs into target container
   const renderGifs = (response) => {
@@ -113,19 +127,23 @@ document.addEventListener("DOMContentLoaded", () => {
       gif.firstElementChild.setAttribute("src", imageURL.replace(".webp", "_s.gif"));
     });
   }
+  // Set a `localStorage` of topics
+  const setLocalStorage = (topics) => {
+    localStorage.setItem("topics", topics);
+  }
   // A function that will toggle the animation
   // still gif <-> webp
   const toggleAnimation = (event) => {
     event.preventDefault();
     let imageURL = event.target.getAttribute("src");
     // If event.target is still image, change it to animated
-    if (imageURL.substr(imageURL.length-6) === "_s.gif") {
+    if (imageURL.substr(imageURL.length - 6) === "_s.gif") {
       // resetAllGifs function will ensure only one gif is playing at a time
       resetAllGifs();
       event.target.setAttribute("src", imageURL.replace("_s.gif", ".webp"));
     }
     // If event.target is animated, change it to still image
-    if (imageURL.substr(imageURL.length-5) === ".webp") {
+    if (imageURL.substr(imageURL.length - 5) === ".webp") {
       event.target.setAttribute("src", imageURL.replace(".webp", "_s.gif"));
     }
   }
